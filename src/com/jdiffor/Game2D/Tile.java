@@ -2,6 +2,7 @@ package com.jdiffor.Game2D;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.net.URI;
 import java.util.ArrayList;
 
 public class Tile extends Drawable {
@@ -12,6 +13,7 @@ public class Tile extends Drawable {
 	private AnimatedSpritesheet spritesheet;
 	private Chest chest;
 	private InventoryItem item;
+	private Trapdoor trapdoor;
 	
 	public Tile(Camera camera, int x, int y, int size, Color c) {
 		super(camera, x, y, size, c);
@@ -57,6 +59,13 @@ public class Tile extends Drawable {
 		}
 	}
 	
+	public void setTrapdoor(boolean isTrapdoor, ArrayList<Trapdoor> trapdoors) {
+		if(isTrapdoor) {
+			this.trapdoor = new Trapdoor();
+			trapdoors.add(this.trapdoor);
+		}
+	}
+	 
 	/*
 	 * Returns whether item was deposited
 	 */
@@ -112,6 +121,14 @@ public class Tile extends Drawable {
 			}
 		}
 		
+		if(this.trapdoor != null) {
+			this.trapdoor.draw(g, this.getScreenX(), this.getScreenY(), Utils.SINGLE_UNIT*GamePanel.SCALE, Utils.SINGLE_UNIT*GamePanel.SCALE);
+			if(Main.DEBUG) {
+				g.setColor(Color.MAGENTA);
+				g.drawRect(this.getScreenX(), this.getScreenY(), width - 1, height - 1);
+			}
+		}
+		
 		if(Main.DEBUG && this.teleportToMap != null) {
 			g.setColor(Color.PINK);
 			g.drawRect(this.getScreenX(), this.getScreenY(), width - 1, height - 1);
@@ -133,6 +150,13 @@ public class Tile extends Drawable {
 	
 	public String getTeleport() {
 		return this.teleportToMap;
+	}
+	
+	public boolean getTrapdoorIsOpen() {
+		if(this.trapdoor == null) {
+			return false;
+		}
+		return this.trapdoor.isOpen();
 	}
 	
 }

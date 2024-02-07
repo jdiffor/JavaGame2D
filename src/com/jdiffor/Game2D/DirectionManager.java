@@ -14,27 +14,27 @@ public class DirectionManager {
 	 * Moves player based on keyboardManager inputs
 	 * Returns string of new map to teleport to if player hits a teleporter
 	 */
-	public String update(Map map) {
+	public String[] update(Map map) {
 		boolean moving = false;
-		String teleportTo = null;
+		String[] teleports = null;
 		
 		if(keyboardManager.getKeyIsPressed('w')) {
-			teleportTo = player.move(Direction.UP, map);
+			teleports = player.move(Direction.UP, map);
 			moving = true;
 		}
 		
 		if(keyboardManager.getKeyIsPressed('a')) {
-			teleportTo = player.move(Direction.LEFT, map);
+			teleports = player.move(Direction.LEFT, map);
 			moving = true;
 		}
 		
 		if(keyboardManager.getKeyIsPressed('s')) {
-			teleportTo = player.move(Direction.DOWN, map);
+			teleports = player.move(Direction.DOWN, map);
 			moving = true;
 		}
 		
 		if(keyboardManager.getKeyIsPressed('d')) {
-			teleportTo = player.move(Direction.RIGHT, map);
+			teleports = player.move(Direction.RIGHT, map);
 			moving = true;
 		}
 		
@@ -42,7 +42,7 @@ public class DirectionManager {
 			player.exhaustExtraMovement();
 		}
 		
-		return teleportTo;
+		return teleports;
 	}
 	
 }

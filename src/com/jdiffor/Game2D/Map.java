@@ -20,7 +20,11 @@ public class Map {
 	private int playerSpawnFromTeleporterX = -1;
 	private int playerSpawnFromTeleporterY = -1;
 	private String name;
+	private boolean isSubLevel;
+	
+	// References to things that may need to be updated
 	private ArrayList<Chest> chests;
+	private ArrayList<Trapdoor> trapdoors;
 	
 	public Map(Camera camera, Dimension worldSizeInTiles, int tileSize) {
 		this.widthInTiles = worldSizeInTiles.width;
@@ -32,6 +36,7 @@ public class Map {
 	public Map(Camera camera, String newMapName, String oldMapName) {
 		this.name = newMapName;
 		this.chests = new ArrayList<Chest>();
+		this.trapdoors = new ArrayList<Trapdoor>();
 		this.createMapFromFile(camera, newMapName, oldMapName);
 	}
 	
@@ -71,16 +76,19 @@ public class Map {
 				
 				boolean isCollisionable = false;
 				boolean isInFrontOfPlayer = false;
+				boolean isTrapdoor = false;
 				String chestColor = null;
 				String itemColor = null;
 				String teleportToMap = null;
 				
 				for(int i = 4; i < tileLine.length; i++) {
-					// Set attributes of tiles here
+					// SET ATTRIBUTES OF TILES HERE
 					if(tileLine[i].equals("collisionable")) {
 						isCollisionable = true;
 					} else if(tileLine[i].equals("inFrontOfPlayer")) {
 						isInFrontOfPlayer = true;
+					} else if(tileLine[i].indexOf("trapdoor") == 0) {
+						isTrapdoor = true;
 					} else if(tileLine[i].indexOf("teleporter:") == 0) {
 						
 						if(tileLine[i].equals("teleporter:" + oldMapName + ":return")) {
@@ -101,16 +109,21 @@ public class Map {
 						if(tileLine[i].indexOf("circle:") == "item:".length()) {
 							itemColor = tileLine[i].substring("item:circle:".length());
 						}
-					}
+					} 
 				}
 				
 				tiles[tileIndexX][tileIndexY] = new Tile(camera, tileX*GamePanel.SCALE, tileY*GamePanel.SCALE, this.tileSize, teleportToMap, Utils.getImagePart(image, tileX, tileY, tileSize)).collisionable(isCollisionable).inFrontOfPlayer(isInFrontOfPlayer);
 				tiles[tileIndexX][tileIndexY].addChest(chestColor, chests);
 				tiles[tileIndexX][tileIndexY].addItem(itemColor);
+				tiles[tileIndexX][tileIndexY].setTrapdoor(isTrapdoor, trapdoors);
 				
 				line = reader.readLine();
 			}
 			reader.close();
+			
+			if(this.chests.size() == 0) {
+				this.isSubLevel = true;
+			}
 			
 		} catch (FileNotFoundException e) {
 			// If file can't load, initialze a random map
@@ -151,7 +164,13 @@ public class Map {
 	}
 	
 	public boolean chestsCompleted() {
-		return this.chests.size() == 0;
+		return !this.isSubLevel && this.chests.size() == 0;
+	}
+	
+	public void openTrapdoors() {
+		for(Trapdoor door : trapdoors) {
+			door.setOpen();
+		}
 	}
 	
 	public String getMapName() {

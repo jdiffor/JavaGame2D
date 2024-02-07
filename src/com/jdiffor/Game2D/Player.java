@@ -100,7 +100,7 @@ public class Player extends Drawable {
 	/*
 	 * Moves player, and returns a string of the new map to teleport to if the player reaches a teleporter
 	 */
-	public String move(Direction d, Map ground) {
+	public String[] move(Direction d, Map ground) {
 		recalculateSpeed(d);
 		
 		adjustPlayerCoordinates(ground, d);
@@ -220,37 +220,40 @@ public class Player extends Drawable {
 	/*
 	 * Returns map name to teleport to if player overlaps with a teleporter
 	 */
-	private String checkForTeleport(Map ground) {
+	private String[] checkForTeleport(Map ground) {
 		int playerLeft = this.playerX;
 		int playerRight = playerLeft + this.playerWidth - 1;
 		int playerTop = this.playerY;
 		int playerBottom = playerTop + this.playerHeight - 1;
+		String[] teleports = new String[2];
 		
 		// Upper-right corner
 		Tile thisTile = ground.getTileAtCoordinates(playerRight, playerTop);
-		if(thisTile != null && thisTile.getTeleport() != null) {
-			return thisTile.getTeleport();
-		}
+		updateTeleportArray(thisTile, teleports);
 		
 		// Bottom-right corner
 		thisTile = ground.getTileAtCoordinates(playerRight, playerBottom);
-		if(thisTile != null && thisTile.getTeleport() != null) {
-			return thisTile.getTeleport();
-		}
+		updateTeleportArray(thisTile, teleports);
 		
 		// Top-left corner
 		thisTile = ground.getTileAtCoordinates(playerLeft, playerTop);
-		if(thisTile != null && thisTile.getTeleport() != null) {
-			return thisTile.getTeleport();
-		}
+		updateTeleportArray(thisTile, teleports);
 		
 		// Bottom-left corner
 		thisTile = ground.getTileAtCoordinates(playerLeft, playerBottom);
-		if(thisTile != null && thisTile.getTeleport() != null) {
-			return thisTile.getTeleport();
-		}
+		updateTeleportArray(thisTile, teleports);
 		
-		return null;
+		return teleports;
+	}
+	
+	private void updateTeleportArray(Tile tile, String[] teleports) {
+		if(tile != null) {
+			if(tile.getTeleport() != null) {
+				teleports[0] = tile.getTeleport();
+			} else if(tile.getTrapdoorIsOpen()) {
+				teleports[1] = "trapdoor";
+			}
+		}
 	}
 	
 	/*

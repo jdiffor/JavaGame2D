@@ -14,6 +14,7 @@ public class World {
 	private Camera camera;
 	private HotBar hotBar;
 	private WinManager winManager;
+	private LevelManager levelManager;
 	
 	private int loadingFrames;
 	private int winDelayFrames = 100;
@@ -22,19 +23,20 @@ public class World {
 		this.keyboardManager = keyboardmanager;
 		this.camera = camera;
 		this.hotBar = hotBar;
-		loadNewMap("maze");
 		this.winManager = new WinManager();
+		this.levelManager = new LevelManager(this, winManager);
 	}
 	
-	public void loadNewMap(String newMapName) {
-		this.loadNewMap(newMapName, "");
+	public Map loadNewMap(String newMapName) {
+		return this.loadNewMap(newMapName, "");
 	}
 	
-	public void loadNewMap(String newMapName, String oldMapName) {
+	public Map loadNewMap(String newMapName, String oldMapName) {
 		this.map = new Map(camera, newMapName, oldMapName);
 		this.player = new Player(camera, hotBar, this.map.getPlayerSpawnX(), this.map.getPlayerSpawnY());
 		camera.setPlayer(player);
 		this.directionManager = new DirectionManager(player, keyboardManager);
+		return this.map;
 	}
 	
 	public void update() {
@@ -44,7 +46,7 @@ public class World {
 		}
 		
 		// Move player
-		String teleportTo = this.directionManager.update(map);
+		String[] teleports = this.directionManager.update(map);
 		
 		// Interact
 		if(this.keyboardManager.getKeyIsPressed('e')) {
@@ -55,14 +57,24 @@ public class World {
 		this.camera.updateCamera();
 		
 		// Teleport
-		if(teleportTo != null) {
-			loadNewMap(teleportTo, this.map.getMapName());
+		if(teleports != null && teleports[0] != null) {
+			loadNewMap(teleports[0], this.map.getMapName());
 			loadingFrames = 60;
+			return;
 		}
 		
-		// Check if game is complete
-		if(this.map.chestsCompleted()) {
-			this.winManager.finish();
+		// Trapdoor
+		if(teleports != null && teleports[1] != null) {
+			this.levelManager.setNextLevel();
+			loadingFrames = 60;
+			return;
+		}
+		
+		// Check if map is complete
+		if(this.map != null) {
+			if(this.map.chestsCompleted()) {
+				this.map.openTrapdoors();
+			}
 		}
 	}
 	

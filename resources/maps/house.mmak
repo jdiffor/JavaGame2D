@@ -1,7 +1,7 @@
 32
-C:\Users\John\eclipse-workspace\Game\Game\assets\maps\house.png
+C:\Users\John\eclipse-workspace\Game\resources\maps\house.png
 20;10;
-characterSpawn;collisionable;teleporter:house;teleporter:field;inFrontOfPlayer;
+characterSpawn;collisionable;teleporter:house;teleporter:field;inFrontOfPlayer;item:circle:blue;
 0;0;0;0;
 0;1;0;32;
 0;2;0;64;
@@ -125,7 +125,7 @@ characterSpawn;collisionable;teleporter:house;teleporter:field;inFrontOfPlayer;
 12;0;384;0;
 12;1;384;32;collisionable;
 12;2;384;64;
-12;3;384;96;
+12;3;384;96;item:circle:blue;
 12;4;384;128;
 12;5;384;160;
 12;6;384;192;

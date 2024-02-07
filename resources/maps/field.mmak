@@ -1,7 +1,7 @@
 32
-C:\Users\John\eclipse-workspace\Game\Game\assets\maps\field.png
+C:\Users\John\eclipse-workspace\Game\resources\maps\field.png
 40;20;
-characterSpawn;collisionable;teleporter:house;inFrontOfPlayer;
+characterSpawn;collisionable;teleporter:house;inFrontOfPlayer;trapdoor;chest:blue;
 0;0;0;0;collisionable;
 0;1;0;32;collisionable;
 0;2;0;64;collisionable;
@@ -229,7 +229,7 @@ characterSpawn;collisionable;teleporter:house;inFrontOfPlayer;
 11;4;352;128;
 11;5;352;160;
 11;6;352;192;
-11;7;352;224;
+11;7;352;224;chest:blue;
 11;8;352;256;
 11;9;352;288;
 11;10;352;320;
@@ -272,7 +272,7 @@ characterSpawn;collisionable;teleporter:house;inFrontOfPlayer;
 13;7;416;224;
 13;8;416;256;
 13;9;416;288;
-13;10;416;320;
+13;10;416;320;trapdoor;
 13;11;416;352;
 13;12;416;384;
 13;13;416;416;
